@@ -404,6 +404,19 @@ function getHomePage(requestUrl) {
             margin-bottom: 8px;
             font-size: 1.1em;
         }
+        .code-box {
+            background: #0a0e1a;
+            color: #a5f3fc;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.85em;
+            overflow-x: auto;
+            margin: 15px 0;
+            border: 1px solid #1e293b;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
         .copy-btn {
             background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
             color: white;
@@ -474,7 +487,7 @@ function getHomePage(requestUrl) {
 
         <h2>📍 آدرس سرویس شما:</h2>
         <div class="url-box" id="dohUrl">${fullDohUrl}</div>
-        <button class="copy-btn" onclick="copyToClipboard()">📋 کپی آدرس</button>
+        <button class="copy-btn" onclick="copyToClipboard('dohUrl')">📋 کپی آدرس</button>
 
         <h2>✨ ویژگی‌های این DoH Proxy:</h2>
         <div class="feature">استفاده از 4 سرور DNS معتبر با قابلیت Fallback خودکار</div>
@@ -490,7 +503,7 @@ function getHomePage(requestUrl) {
             <div class="dns-item">2. Google DNS (8.8.8.8)</div>
             <div class="dns-item">3. Quad9 DNS (9.9.9.9)</div>
             <div class="dns-item">4. OpenDNS</div>
-        </div>
+        </dns>
 
         <div class="warning">
             <strong>⚠️ توجه:</strong> این سرویس فقط DNS queries را رمزنگاری می‌کند و جایگزین VPN نیست. برای دسترسی کامل به سایت‌های فیلتر شده، از VPN استفاده کنید.
@@ -511,6 +524,46 @@ function getHomePage(requestUrl) {
                 4. آدرس زیر را در قسمت Custom DNS over HTTPS server URL وارد کنید:<br>
                 <div class="url-box" style="margin-top: 10px; font-size: 0.85em;">${fullDohUrl}</div>
                 5. دکمه ON را فعال کنید و از اینترنت امن‌تر لذت ببرید!
+            </div>
+
+            <div class="usage-item">
+                <strong>🔧 کلاینت‌های Xray (v2rayNG و مشابه):</strong>
+                برای استفاده در کلاینت‌های مبتنی بر Xray، می‌توانید از کانفیگ زیر استفاده کنید:<br><br>
+                <div class="code-box" id="xrayConfig">{
+  "remarks": "🛡️ Anonymous DoH Proxy",
+  "dns": {
+    "servers": [{"address": "${fullDohUrl}"}],
+    "queryStrategy": "UseIP"
+  },
+  "inbounds": [
+    {
+      "port": 10808,
+      "listen": "127.0.0.1",
+      "protocol": "socks",
+      "settings": {"auth": "noauth", "udp": true},
+      "sniffing": {
+        "enabled": true,
+        "destOverride": ["http", "tls"]
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "freedom",
+      "settings": {"domainStrategy": "UseIP"},
+      "tag": "direct"
+    }
+  ],
+  "routing": {
+    "domainStrategy": "AsIs",
+    "rules": [
+      {"type": "field", "outboundTag": "direct", "network": "udp,tcp"}
+    ]
+  }
+}</div>
+                <button class="copy-btn" onclick="copyToClipboard('xrayConfig')">📋 کپی کانفیگ Xray</button>
+                <br><br>
+                <strong>نکته:</strong> این کانفیگ فقط DNS را امن می‌کند. برای دسترسی کامل به سایت‌های فیلتر شده نیاز به VPN دارید.
             </div>
 
             <div class="usage-item">
@@ -535,13 +588,14 @@ function getHomePage(requestUrl) {
     </div>
 
     <script>
-        function copyToClipboard() {
-            const url = document.getElementById('dohUrl').textContent;
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent;
             const btn = event.target;
             const originalHTML = btn.innerHTML;
             
             if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(url).then(() => {
+                navigator.clipboard.writeText(text).then(() => {
                     btn.classList.add('copied');
                     btn.innerHTML = '✓ کپی شد!';
                     setTimeout(() => {
@@ -549,10 +603,10 @@ function getHomePage(requestUrl) {
                         btn.innerHTML = originalHTML;
                     }, 2000);
                 }).catch(() => {
-                    fallbackCopy(url, btn, originalHTML);
+                    fallbackCopy(text, btn, originalHTML);
                 });
             } else {
-                fallbackCopy(url, btn, originalHTML);
+                fallbackCopy(text, btn, originalHTML);
             }
         }
         
