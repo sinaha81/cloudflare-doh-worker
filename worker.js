@@ -18,6 +18,12 @@ addEventListener('fetch', event => {
 });
 
 async function handleRequest(request) {
+  const url = new URL(request.url);
+  
+  if (url.pathname === '/apple') {
+    return generateAppleProfile(request.url);
+  }
+  
   const clientIP = request.headers.get('CF-Connecting-IP') || 'unknown';
   
   if (!checkRateLimit(clientIP)) {
@@ -29,8 +35,6 @@ async function handleRequest(request) {
       }
     });
   }
-
-  const url = new URL(request.url);
   
   if (url.pathname !== '/dns-query') {
     return new Response(getHomePage(request.url), {
@@ -86,6 +90,72 @@ async function handleRequest(request) {
       }
     });
   }
+}
+
+function generateAppleProfile(requestUrl) {
+  const baseUrl = new URL(requestUrl);
+  const dohUrl = `${baseUrl.protocol}//${baseUrl.hostname}/dns-query`;
+  const hostname = baseUrl.hostname;
+  
+  const uuid1 = crypto.randomUUID();
+  const uuid2 = crypto.randomUUID();
+  const uuid3 = crypto.randomUUID();
+  
+  const mobileconfig = `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>PayloadContent</key>
+    <array>
+        <dict>
+            <key>DNSSettings</key>
+            <dict>
+                <key>DNSProtocol</key>
+                <string>HTTPS</string>
+                <key>ServerURL</key>
+                <string>${dohUrl}</string>
+            </dict>
+            <key>PayloadDescription</key>
+            <string>Configures device to use Anonymous DoH Proxy</string>
+            <key>PayloadDisplayName</key>
+            <string>Anonymous DoH Proxy</string>
+            <key>PayloadIdentifier</key>
+            <string>com.cloudflare.${uuid2}.dnsSettings.managed</string>
+            <key>PayloadType</key>
+            <string>com.apple.dnsSettings.managed</string>
+            <key>PayloadUUID</key>
+            <string>${uuid3}</string>
+            <key>PayloadVersion</key>
+            <integer>1</integer>
+            <key>ProhibitDisablement</key>
+            <false/>
+        </dict>
+    </array>
+    <key>PayloadDescription</key>
+    <string>This profile enables encrypted DNS (DNS over HTTPS) on iOS, iPadOS, and macOS devices using your personal DoH Proxy.</string>
+    <key>PayloadDisplayName</key>
+    <string>Anonymous DoH Proxy - ${hostname}</string>
+    <key>PayloadIdentifier</key>
+    <string>com.cloudflare.${uuid1}</string>
+    <key>PayloadRemovalDisallowed</key>
+    <false/>
+    <key>PayloadType</key>
+    <string>Configuration</string>
+    <key>PayloadUUID</key>
+    <string>${uuid1}</string>
+    <key>PayloadVersion</key>
+    <integer>1</integer>
+</dict>
+</plist>`;
+
+  return new Response(mobileconfig, {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/x-apple-aspen-config; charset=utf-8',
+      'Content-Disposition': `attachment; filename="doh-proxy-${hostname}.mobileconfig"`,
+      'Cache-Control': 'no-cache'
+    }
+  });
 }
 
 async function handleGetRequest(url) {
@@ -236,6 +306,7 @@ function isValidBase64Url(str) {
 
 function getHomePage(requestUrl) {
   const fullDohUrl = new URL('/dns-query', requestUrl).href;
+  const appleProfileUrl = new URL('/apple', requestUrl).href;
   const workerHostname = new URL(requestUrl).hostname;
   
   return `<!DOCTYPE html>
@@ -417,7 +488,7 @@ function getHomePage(requestUrl) {
             white-space: pre-wrap;
             word-wrap: break-word;
         }
-        .copy-btn {
+        .copy-btn, .download-btn {
             background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
             color: white;
             border: none;
@@ -425,19 +496,26 @@ function getHomePage(requestUrl) {
             border-radius: 8px;
             cursor: pointer;
             margin-top: 10px;
+            margin-left: 10px;
             font-size: 0.95em;
             transition: all 0.3s;
             font-weight: 600;
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            text-decoration: none;
         }
-        .copy-btn:hover {
-            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        .download-btn {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        }
+        .copy-btn:hover, .download-btn:hover {
             box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
             transform: translateY(-2px);
         }
-        .copy-btn:active {
+        .download-btn:hover {
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
+        }
+        .copy-btn:active, .download-btn:active {
             transform: translateY(0);
         }
         .copy-btn.copied {
@@ -503,7 +581,7 @@ function getHomePage(requestUrl) {
             <div class="dns-item">2. Google DNS (8.8.8.8)</div>
             <div class="dns-item">3. Quad9 DNS (9.9.9.9)</div>
             <div class="dns-item">4. OpenDNS</div>
-        </dns>
+        </div>
 
         <div class="warning">
             <strong>⚠️ توجه:</strong> این سرویس فقط DNS queries را رمزنگاری می‌کند و جایگزین VPN نیست. برای دسترسی کامل به سایت‌های فیلتر شده، از VPN استفاده کنید.
@@ -524,6 +602,16 @@ function getHomePage(requestUrl) {
                 4. آدرس زیر را در قسمت Custom DNS over HTTPS server URL وارد کنید:<br>
                 <div class="url-box" style="margin-top: 10px; font-size: 0.85em;">${fullDohUrl}</div>
                 5. دکمه ON را فعال کنید و از اینترنت امن‌تر لذت ببرید!
+            </div>
+
+            <div class="usage-item">
+                <strong>🍎 iOS, iPadOS و macOS:</strong>
+                برای استفاده در دستگاه‌های اپل، کافی است پروفایل شخصی خود را دانلود و نصب کنید:<br><br>
+                <a href="${appleProfileUrl}" class="download-btn">🍎 دانلود پروفایل iOS/macOS</a>
+                <br><br>
+                <strong>نحوه نصب:</strong><br>
+                • <strong>iOS/iPadOS:</strong> فایل را با Safari دانلود کنید → Settings → General → VPN, DNS & Device Management → Downloaded Profile → Install<br>
+                • <strong>macOS:</strong> فایل را دانلود کنید → System Settings → Privacy & Security → Profiles → نصب پروفایل
             </div>
 
             <div class="usage-item">
@@ -569,11 +657,6 @@ function getHomePage(requestUrl) {
             <div class="usage-item">
                 <strong>💻 ویندوز 11:</strong>
                 Settings → Network & Internet → Properties → DNS server assignment → Edit → Preferred DNS encryption: Encrypted only (DNS over HTTPS) و آدرس بالا را وارد کنید.
-            </div>
-
-            <div class="usage-item">
-                <strong>🍎 iOS/macOS:</strong>
-                نیاز به نصب پروفایل DoH configuration دارد یا استفاده از اپلیکیشن‌های شخص ثالث.
             </div>
 
             <div class="usage-item">
