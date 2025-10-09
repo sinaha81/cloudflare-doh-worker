@@ -78,6 +78,23 @@ Settings → Privacy and security → Security
 4. URL خود را وارد کنید
 5. دکمه **ON** را فعال کنید
 
+### iOS, iPadOS و macOS
+
+برای دستگاه‌های اپل، Worker به صورت خودکار پروفایل DoH شخصی شما را می‌سازد:
+
+1. به آدرس Worker خود بروید (بدون `/dns-query`)
+2. روی دکمه **🍎 دانلود پروفایل iOS/macOS** کلیک کنید
+3. فایل `.mobileconfig` دانلود می‌شود
+
+**نصب در iOS/iPadOS:**
+- فایل را با Safari باز کنید
+- Settings → General → VPN, DNS & Device Management
+- Downloaded Profile → Install
+
+**نصب در macOS:**
+- System Settings → Privacy & Security → Profiles
+- نصب پروفایل دانلود شده
+
 ### کلاینت‌های Xray (v2rayNG و مشابه)
 
 برای استفاده در کلاینت‌هایی با هسته Xray:
@@ -97,10 +114,6 @@ Settings → Network & Internet → Properties
 → Preferred DNS encryption: Encrypted only (DNS over HTTPS)
 → URL: https://your-worker.workers.dev/dns-query
 ```
-
-### iOS/macOS
-
-نیاز به نصب پروفایل DoH یا استفاده از اپلیکیشن‌های شخص ثالث دارد.
 
 ## 🌐 سرورهای DNS استفاده شده
 
@@ -184,7 +197,15 @@ curl -H 'accept: application/dns-json' \
 
 این پروژه تحت مجوز MIT منتشر شده است. برای اطلاعات بیشتر فایل [LICENSE](LICENSE) را مشاهده کنید.
 
-## 👽 سازنده
+## 🔗 لینک‌های مفید
+
+- [مستندات Cloudflare Workers](https://developers.cloudflare.com/workers/)
+- [RFC 8484 - DNS over HTTPS](https://datatracker.ietf.org/doc/html/rfc8484)
+- [Cloudflare DNS](https://1.1.1.1/)
+- [اپلیکیشن Intra](https://getintra.org/)
+- [کانفیگ Xray](https://raw.githubusercontent.com/4n0nymou3/cloudflare-doh-proxy/refs/heads/main/xray-doh-proxy-client-config.jsonc)
+
+## 👨‍💻 سازنده
 
 طراحی و توسعه توسط: [Anonymous](https://t.me/BXAMbot)
 
