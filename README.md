@@ -61,8 +61,7 @@ https://your-worker-name.your-subdomain.workers.dev/dns-query
 3. روی **Create Application** کلیک کنید و گزینه **Pages** را انتخاب کنید
 4. روی **Connect to Git** کلیک کنید و ریپازیتوری [cloudflare-doh-proxy](https://github.com/4n0nymou3/cloudflare-doh-proxy) را انتخاب کنید
 5. در بخش Build settings، Framework را None انتخاب کنید
-6. در تنظیمات Functions، فایل `_worker.js` را به عنوان Worker اضافه کنید
-7. روی **Save and Deploy** کلیک کنید
+6. روی **Save and Deploy** کلیک کنید
 
 بعد از Deploy، URL شما به شکل `https://your-page.pages.dev/dns-query` خواهد بود.
 
