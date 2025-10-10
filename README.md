@@ -52,6 +52,20 @@ https://your-worker-name.your-subdomain.workers.dev/dns-query
 
 این URL را در مرورگر یا دستگاه خود به عنوان DoH استفاده کنید.
 
+### گزینه جایگزین: استفاده از Cloudflare Pages
+
+علاوه بر Cloudflare Workers، این پروژه از Cloudflare Pages نیز پشتیبانی می‌کند. می‌توانید ریپازیتوری GitHub را مستقیماً به Cloudflare Pages متصل کنید و DoH Proxy خود را بسازید.
+
+1. به [dash.cloudflare.com](https://dash.cloudflare.com) بروید و وارد شوید
+2. از منوی سمت چپ **Workers & Pages** را انتخاب کنید
+3. روی **Create Application** کلیک کنید و گزینه **Pages** را انتخاب کنید
+4. روی **Connect to Git** کلیک کنید و ریپازیتوری [cloudflare-doh-proxy](https://github.com/4n0nymou3/cloudflare-doh-proxy) را انتخاب کنید
+5. در بخش Build settings، Framework را None انتخاب کنید
+6. در تنظیمات Functions، فایل `_worker.js` را به عنوان Worker اضافه کنید
+7. روی **Save and Deploy** کلیک کنید
+
+بعد از Deploy، URL شما به شکل `https://your-page.pages.dev/dns-query` خواهد بود.
+
 ## 📱 نحوه استفاده
 
 ### مرورگر Firefox
