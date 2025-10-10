@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="DoH Proxy قدرتمند با Cloudflare Worker یا Cloudflare Pages - رمزنگاری DNS با امنیت بالا">
-    <meta name="keywords" content="DoH, DNS over HTTPS, Cloudflare Worker, Cloudflare Pages, Privacy, Security">
+    <meta name="description" content="DoH Proxy قدرتمند با Cloudflare Worker - رمزنگاری DNS با امنیت بالا">
+    <meta name="keywords" content="DoH, DNS over HTTPS, Cloudflare Worker, Privacy, Security">
     <title>Cloudflare DoH Proxy - ساخت DNS امن شخصی</title>
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
@@ -76,49 +76,42 @@
                 <span class="step-number">6</span>
                 <strong>ذخیره و Deploy:</strong> روی Save and Deploy کلیک کنید.
             </div>
-
-            <div class="success-box">
-                <strong>✅ تبریک!</strong> DoH Proxy شما با Cloudflare Worker آماده است.
-            </div>
-
-            <hr style="margin: 30px 0; border: none; border-top: 1px solid #e2e8f0;">
-
-            <h3>🚀 روش جایگزین: استفاده از Cloudflare Pages</h3>
-            <p>علاوه بر Cloudflare Worker، می‌توانید همین DoH Proxy را از طریق Cloudflare Pages نیز راه‌اندازی کنید. این روش برای افرادی مناسب است که می‌خواهند پروژه را مستقیماً از GitHub به Cloudflare متصل کنند.</p>
+            
+            <h3>گزینه جایگزین: استفاده از Cloudflare Pages</h3>
+            <p>علاوه بر Cloudflare Workers، این پروژه از Cloudflare Pages نیز پشتیبانی می‌کند. می‌توانید ریپازیتوری GitHub را مستقیماً به Cloudflare Pages متصل کنید و DoH Proxy خود را بسازید.</p>
             
             <div class="step">
                 <span class="step-number">1</span>
-                <strong>اتصال GitHub به Cloudflare Pages:</strong>
-                <p>در داشبورد Cloudflare، از منوی <strong>Workers & Pages</strong> گزینه <strong>Create Application</strong> را انتخاب کنید و سپس <strong>Create Pages</strong> را بزنید.</p>
+                <strong>ورود به Cloudflare:</strong> به <a href="https://dash.cloudflare.com" target="_blank">dash.cloudflare.com</a> بروید و وارد حساب کاربری خود شوید.
             </div>
             
             <div class="step">
                 <span class="step-number">2</span>
-                <strong>انتخاب Repository:</strong>
-                <p>ریپازیتوری <code>cloudflare-doh-proxy</code> را از GitHub انتخاب کنید یا فورک شخصی خودتان را وارد نمایید.</p>
+                <strong>ساخت Page:</strong> از منوی سمت چپ Workers & Pages را انتخاب کنید و روی Create Application کلیک کنید، سپس گزینه Pages را انتخاب کنید.
             </div>
             
             <div class="step">
                 <span class="step-number">3</span>
-                <strong>انتخاب Branch و مسیر Build:</strong>
-                <p>Branch اصلی (معمولاً <code>main</code>) را انتخاب کنید. نیازی به تنظیم Build Command نیست. فقط مسیر Root پروژه را انتخاب کنید.</p>
+                <strong>اتصال به GitHub:</strong> روی Connect to Git کلیک کنید و ریپازیتوری <a href="https://github.com/4n0nymou3/cloudflare-doh-proxy" target="_blank">cloudflare-doh-proxy</a> را انتخاب کنید.
             </div>
             
             <div class="step">
                 <span class="step-number">4</span>
-                <strong>افزودن فایل _worker.js:</strong>
-                <p>در ریشهٔ ریپازیتوری فایل <code>_worker.js</code> وجود دارد. این فایل به‌طور خودکار هنگام Deploy در Pages برای هندل کردن درخواست‌های DoH فعال می‌شود.</p>
+                <strong>تنظیمات ساخت:</strong> در بخش Build settings، Framework را None انتخاب کنید و روی Save and Deploy کلیک کنید.
             </div>
             
             <div class="step">
                 <span class="step-number">5</span>
-                <strong>اتمام و Deploy:</strong>
-                <p>روی <strong>Deploy site</strong> کلیک کنید و منتظر بمانید تا سایت ساخته شود.</p>
+                <strong>افزودن Worker:</strong> پس از Deploy، در تنظیمات Page، Functions را انتخاب کنید و فایل <code>_worker.js</code> را به عنوان Worker اضافه کنید.
             </div>
-
+            
+            <div class="step">
+                <span class="step-number">6</span>
+                <strong>ذخیره و Deploy:</strong> تغییرات را ذخیره کرده و Deploy کنید.
+            </div>
+            
             <div class="success-box">
-                <strong>✅ تبریک!</strong> اکنون DoH Proxy شما از طریق <strong>Cloudflare Pages</strong> نیز فعال است.
-                <p style="margin-top:10px; font-size:0.9em;">در صورت تمایل می‌توانید هر دو روش (Worker و Pages) را همزمان داشته باشید.</p>
+                <strong>✅ تبریک!</strong> DoH Proxy شما آماده است.
             </div>
         </div>
 
@@ -144,7 +137,7 @@
             <div class="step">
                 <strong>دانلود پروفایل شخصی:</strong>
                 <p style="margin-top: 10px;">برای استفاده در دستگاه‌های اپل، پروفایل DoH شخصی خود را دانلود کنید. این پروفایل به صورت خودکار با URL اختصاصی شما ساخته می‌شود.</p>
-                <p style="margin-top: 10px; font-size: 0.9em; color: #94a3b8;">بعد از Deploy کردن Worker یا Pages، صفحه وب را باز کنید و دکمه دانلود پروفایل iOS/macOS را کلیک کنید.</p>
+                <p style="margin-top: 10px; font-size: 0.9em; color: #94a3b8;">بعد از Deploy کردن Worker، صفحه وب را باز کنید و دکمه دانلود پروفایل iOS/macOS را کلیک کنید.</p>
             </div>
 
             <h3>کلاینت‌های Xray (v2rayNG و مشابه)</h3>
