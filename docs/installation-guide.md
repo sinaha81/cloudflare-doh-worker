@@ -65,6 +65,30 @@
 2. منتظر بمانید تا Worker به روز شود (معمولاً چند ثانیه طول می‌کشد)
 3. پیغام موفقیت نمایش داده می‌شود
 
+## ⚙️ گزینه جایگزین: استفاده از Cloudflare Pages
+
+علاوه بر Cloudflare Workers، این پروژه از Cloudflare Pages نیز پشتیبانی می‌کند. می‌توانید ریپازیتوری GitHub را مستقیماً به Cloudflare Pages متصل کنید و DoH Proxy خود را بسازید.
+
+### گام 1: دسترسی به بخش Pages
+
+1. در داشبورد Cloudflare، از منوی سمت چپ گزینه **Workers & Pages** را انتخاب کنید
+2. روی دکمه **Create Application** کلیک کنید و گزینه **Pages** را انتخاب کنید
+
+### گام 2: اتصال به GitHub
+
+1. روی **Connect to Git** کلیک کنید
+2. ریپازیتوری [cloudflare-doh-proxy](https://github.com/4n0nymou3/cloudflare-doh-proxy) را انتخاب کنید
+
+### گام 3: تنظیمات ساخت
+
+1. در بخش Build settings، Framework را None انتخاب کنید
+
+### گام 4: ذخیره و Deploy
+
+1. روی **Save and Deploy** کلیک کنید
+2. منتظر بمانید تا Page به روز شود
+3. پیغام موفقیت نمایش داده می‌شود
+
 ## 🎉 مرحله سوم: دریافت و تست URL
 
 ### دریافت URL
@@ -180,121 +204,22 @@ curl -H 'accept: application/dns-json' \
 4. به پایین اسکرول کنید و **Profiles** را پیدا کنید
 5. در بخش Downloaded، پروفایل دانلود شده را خواهید دید
 6. روی پروفایل دابل کلیک کنید
-7. محتویات پروفایل را بررسی کنید و روی **Install** کلیک کنید
-8. رمز عبور macOS خود را وارد کنید
-9. پروفایل نصب می‌شود
+7. محتویات پروفایل را بررسی کنید و روی **Install** بزنید
 
-#### بررسی نصب موفق:
-
-**iOS/iPadOS:**
-- Settings → General → VPN, DNS & Device Management → DNS
-- باید "Anonymous DoH Proxy" را در لیست ببینید
-
-**macOS:**
-- System Settings → Privacy & Security → Profiles
-- پروفایل "Anonymous DoH Proxy" باید در لیست باشد
-
-#### حذف پروفایل (در صورت نیاز):
-
-**iOS/iPadOS:**
-- Settings → General → VPN, DNS & Device Management → DNS
-- روی پروفایل بزنید → Remove Profile
-
-**macOS:**
-- System Settings → Privacy & Security → Profiles
-- پروفایل را انتخاب کنید → روی منفی (-) بزنید
-
-### کلاینت‌های Xray (v2rayNG, v2rayN, Nekoray و مشابه)
-
-برای کاربرانی که می‌خواهند از DoH Proxy در کلاینت‌های مبتنی بر Xray استفاده کنند:
+### کلاینت‌های Xray (v2rayNG و مشابه)
 
 #### گام 1: دانلود کانفیگ
 
-فایل کانفیگ را از یکی از این روش‌ها دریافت کنید:
-
-**روش 1:** دانلود مستقیم از GitHub:
-```
-https://raw.githubusercontent.com/4n0nymou3/cloudflare-doh-proxy/refs/heads/main/xray-doh-proxy-client-config.jsonc
-```
-
-**روش 2:** کپی کردن دستی:
-
-```json
-{
-  "remarks": "🛡️ Anonymous DoH Proxy",
-  "log": {
-    "loglevel": "warning"
-  },
-  "dns": {
-    "servers": [
-      {
-        "address": "**********"
-      }
-    ],
-    "queryStrategy": "UseIP"
-  },
-  "inbounds": [
-    {
-      "port": 10808,
-      "listen": "127.0.0.1",
-      "protocol": "socks",
-      "settings": {
-        "auth": "noauth",
-        "udp": true
-      },
-      "sniffing": {
-        "enabled": true,
-        "destOverride": [
-          "http",
-          "tls"
-        ]
-      }
-    },
-    {
-      "port": 10809,
-      "listen": "127.0.0.1",
-      "protocol": "http",
-      "settings": {},
-      "sniffing": {
-        "enabled": true,
-        "destOverride": [
-          "http",
-          "tls"
-        ]
-      }
-    }
-  ],
-  "outbounds": [
-    {
-      "protocol": "freedom",
-      "settings": {
-        "domainStrategy": "UseIP"
-      },
-      "tag": "direct"
-    }
-  ],
-  "routing": {
-    "domainStrategy": "AsIs",
-    "rules": [
-      {
-        "type": "field",
-        "outboundTag": "direct",
-        "network": "udp,tcp"
-      }
-    ]
-  }
-}
-```
+1. فایل [`xray-doh-proxy-client-config.jsonc`](https://raw.githubusercontent.com/4n0nymou3/cloudflare-doh-proxy/refs/heads/main/xray-doh-proxy-client-config.jsonc) را دانلود کنید
 
 #### گام 2: ویرایش کانفیگ
 
-1. فایل JSON را با یک text editor باز کنید
-2. در قسمت `"address": "**********"` عبارت `**********` را با URL DoH Proxy خود جایگزین کنید
-3. مثال:
+1. فایل را با یک ویرایشگر متن باز کنید (مثل Notepad یا VS Code)
+2. در قسمت `dns.servers` آدرس DoH Proxy خود را جایگزین کنید:
    ```json
    "address": "https://my-doh-proxy.workers.dev/dns-query"
    ```
-4. فایل را ذخیره کنید
+3. فایل را ذخیره کنید
 
 #### گام 3: Import در کلاینت
 
