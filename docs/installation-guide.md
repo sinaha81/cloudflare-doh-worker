@@ -52,7 +52,7 @@
 
 ### گام 4: کپی کردن کد DoH Proxy
 
-1. فایل [`worker.js`](../worker.js) را از repository باز کنید
+1. فایل [`worker.js`](../manual-worker/worker.js) را از repository باز کنید
 2. روی دکمه **Raw** کلیک کنید (در GitHub)
 3. تمام محتوا را با `Ctrl+A` انتخاب کنید
 4. با `Ctrl+C` کپی کنید
