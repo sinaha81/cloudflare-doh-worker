@@ -39,7 +39,7 @@
 
 1. روی **Edit Code** کلیک کنید
 2. تمام کد پیش‌فرض را پاک کنید
-3. محتوای فایل [`[worker.js](https://raw.githubusercontent.com/4n0nymou3/cloudflare-doh-proxy/refs/heads/main/manual-worker/worker.js)`](worker.js) را کپی کرده و جایگذاری کنید
+3. محتوای فایل [`worker.js`](manual-worker/worker.js) را کپی کرده و جایگذاری کنید
 4. روی **Save and Deploy** کلیک کنید
 
 ### مرحله 3: دریافت URL
