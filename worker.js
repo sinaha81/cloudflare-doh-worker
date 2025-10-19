@@ -627,7 +627,7 @@ function getHomePage(requestUrl) {
                 </div>
                 <div class="setting-item">
                     <label for="frag-packets">Fragment Packets</label>
-                    <input type="text" id="frag-packets" value="tlshello" oninput="updateXrayConfig()">
+                    <input type="text" id="frag-packets" value="1-1" oninput="updateXrayConfig()">
                 </div>
                 <div class="setting-item">
                     <label for="frag-length">Fragment Length</label>
